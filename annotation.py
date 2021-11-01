@@ -9,9 +9,10 @@ from psycopg2 import Error
 class QepNode(NodeMixin): # Add node feature
     def __init__(self, list_of_tuple, parent=None, children=None):
         self.list_tup = list_of_tuple
-        self.node_type = self.get_node_type()
+        self.explanation = self.get_info()
         self.name = self.get_node_type()
         self.parent = parent
+
         if children:
             self.children = children
 
@@ -20,11 +21,18 @@ class QepNode(NodeMixin): # Add node feature
         # m1 = r1.match(self.list_tup[0][0])
         # return m1
         text = self.list_tup[0][0].split('(')[0]
-        self.info = self.list_tup[0][0].split('(')[1]
         if '->  ' in text:
             text = text.split('->  ')[1]
         return text
 
+    def get_info(self):
+        _text = ""
+        for i in self.list_tup[1:]:
+            print(i)
+            _text += i[0].lstrip()
+        print(f"{_text} - final string")
+        return _text
+    
 # get index of first '->'
 def get_index_first_arrow(qep):
     for idx, value in enumerate(qep, start=0):
