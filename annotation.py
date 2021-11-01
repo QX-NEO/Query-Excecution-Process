@@ -32,7 +32,7 @@ class QepNode(NodeMixin): # Add node feature
             _text += i[0].lstrip()
         print(f"{_text} - final string")
         return _text
-    
+
 # get index of first '->'
 def get_index_first_arrow(qep):
     for idx, value in enumerate(qep, start=0):
@@ -71,6 +71,7 @@ def group_nodes_to_list(qep):
 
 
 def store_qep_in_tree(qep):
+    # return list of objects of qep
     lst_obj = []
     lst = group_nodes_to_list(qep)
 
@@ -98,3 +99,16 @@ def store_qep_in_tree(qep):
                 if prev_indent < indent:
                     obj = QepNode(value, parent=lst_obj[len(lst[:idx])-j])
                     lst_obj.append(obj)
+
+    return lst_obj
+
+
+def print_steps(lst_obj):
+    root = lst_obj[0]
+    # check out PostOrderIter anytree for traversal
+    x = [node for node in anytree.PostOrderIter(root)]
+    for idx, val in enumerate(x, start=1):
+        print(f'Step {idx}: Perform {val.name}')
+        if val.explanation != "":
+            print(f'{val.explanation}')
+
