@@ -104,7 +104,9 @@ def store_qep_in_tree(qep):
 
 
 def print_steps(lst_obj):
+    # Take the list of objects as parameter and print out the steps for execution from bottom up
     root = lst_obj[0]
+
     # check out PostOrderIter anytree for traversal
     x = [node for node in anytree.PostOrderIter(root)]
     for idx, val in enumerate(x, start=1):
