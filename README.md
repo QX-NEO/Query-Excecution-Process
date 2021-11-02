@@ -21,7 +21,7 @@ By default, host and port is localhost and 5432 respectively if it is not specif
 
 If Authentication is successful "Connection successful" will shown the top of the GUI otherwise it will dsiplay "Unable to connect".
 
-You can click the example buttons to run our preset queries, or type in the textbox. 
+You can click the example buttons to run our preset queries, or type your own queries in the textbox. 
 
 For all textbox that are to be filled up simply press enter and the input will be applied.
 
