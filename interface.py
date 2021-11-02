@@ -1,11 +1,17 @@
 import streamlit as st
 import preprocessing
-import time
+from contextlib import contextmanager, redirect_stdout
+from io import StringIO
+from time import sleep
+import annotation
+
+
 
 
 
 def main_interface():
-    status,login = sidebar()
+    st.set_page_config(layout="wide")
+    status, login = sidebar()
     if not status:
         st.error("Unable to connect")
     else:
@@ -17,11 +23,19 @@ def main_interface():
             query_string = write_query()
 
         try:
-            table = preprocessing.read_query(query_string, login)
-            st.dataframe(table)
+            string_plan, plan = preprocessing.read_query(query_string, login)
+            if string_plan:
+                st.subheader("Query execution plan:")
+                st.code(string_plan)
+                st.subheader("Tree")
+                output = st.empty()
+                with st_capture(output.code):
+                    annotation.get_tree(plan)
 
         except:
             st.error("Unable to read query")
+                
+
 
 
 
@@ -53,7 +67,7 @@ def example_query():
         example_query = """select c_name , c_acctbal ,c_custkey, o_totalprice
                             from customer as a
                             join public.orders as b on a.c_custkey = b.o_custkey
-                            where o_totalprice < 50000
+                            where o_totalprice < 5000
                         """
 
     if st.button('Example 2'):
@@ -126,4 +140,17 @@ def update_second():
 
 def write_query():
      query =  st.text_area("", key = 'second', height= 400, on_change=update_second)
-     return query 
+     return query
+
+@contextmanager
+def st_capture(output_func):
+    with StringIO() as stdout, redirect_stdout(stdout):
+        old_write = stdout.write
+
+        def new_write(string):
+            ret = old_write(string)
+            output_func(stdout.getvalue())
+            return ret
+        
+        stdout.write = new_write
+        yield
