@@ -1,10 +1,15 @@
 import pandas as pd
 import psycopg2
-import anytree
-import re
-
-from anytree import NodeMixin, RenderTree
 from psycopg2 import Error
+import anytree
+from anytree import NodeMixin, RenderTree
+import re
+from psycopg2 import Error
+
+
+
+
+
 
 class QepNode(NodeMixin): # Add node feature
     def __init__(self, list_of_tuple, parent=None, children=None):
@@ -106,11 +111,27 @@ def store_qep_in_tree(qep):
 def print_steps(lst_obj):
     # Take the list of objects as parameter and print out the steps for execution from bottom up
     root = lst_obj[0]
+    query_string = ""
 
     # check out PostOrderIter anytree for traversal
     x = [node for node in anytree.PostOrderIter(root)]
     for idx, val in enumerate(x, start=1):
         print(f'Step {idx}: Perform {val.name}')
+        query_string += f'Step {idx}: Perform {val.name}'
+
         if val.explanation != "":
             print(f'{val.explanation}')
+            query_string += f'{val.explanation}'
+        query_string += '\n'
+
+    for pre, _, node in RenderTree(lst_obj[0]):
+        print("%s%s" % (pre, node.name))
+
+    return query_string
+
+def get_tree(lst_obj):
+
+    for pre, _, node in RenderTree(lst_obj[0]):
+        print("%s%s" % (pre, node.name))
+
 
